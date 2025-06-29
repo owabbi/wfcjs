@@ -1,14 +1,45 @@
-#topContainer {
-    display: flex;           /* Arrange canvases side-by-side */
-    width: 1600px;
-    margin-bottom: 10px;     /* Space between the top and bottom canvases */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+#app {
+    display: flex;
+    gap: 20px;
+    padding: 1rem;
+}
+
+#canvasContainer {
+    display: flex;
+    gap: 10px;
 }
 
 canvas {
-    border: 1px solid black; /* Optional: Border for better visibility */
+    border: 1px solid black;
 }
 
-#waterAnimationCanvas {
-    width: 600px;
-    height: 600px;
+#controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 300px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+fieldset {
+    border: 1px solid #ccc;
+    padding: 10px;
 }
