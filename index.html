@@ -1,51 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>wfc</title>
 </head>
-
 <body>
-    <div id="topContainer">
-        <canvas id="islandCanvas" width="600" height="600"></canvas>
-        <canvas id="elevationCanvas" width="600" height="600"></canvas>
+    <header>
+        <h1>Island Generator</h1>
+    </header>
 
+    <div id="app">
+        <div id="canvasContainer">
+            <canvas id="islandCanvas" width="600" height="600"></canvas>
+            <canvas id="elevationCanvas" class="hidden" width="600" height="600"></canvas>
+        </div>
+
+        <div id="controls">
+            <div class="control-group">
+                <label for="treeDensitySlider">Tree Density</label>
+                <input type="range" id="treeDensitySlider" min="0" max="100" value="50">
+            </div>
+
+            <div class="control-group">
+                <label for="islandSize">Island Size</label>
+                <input type="range" id="islandSize" min="1" max="10" value="4">
+            </div>
+
+            <div class="control-group">
+                <label for="cloudOpacitySlider">Cloud Opacity</label>
+                <input type="range" id="cloudOpacitySlider" min="0" max="1" step="0.05" value="0.5">
+            </div>
+
+            <div class="control-group">
+                <button id="toggleWavesButton" onclick="toggleWaves()">Toggle Waves</button>
+                <button id="mergeToggleButton" onclick="toggleMerge()">Toggle Elevation Merge</button>
+            </div>
+
+            <button id="debugModeButton">Debug Mode</button>
+
+            <fieldset id="debugControls" class="hidden">
+                <legend>Debug Display</legend>
+                <label><input type="radio" name="displayMode" value="elevation" checked> Elevation</label>
+                <label><input type="radio" name="displayMode" value="waves"> Waves</label>
+                <label><input type="radio" name="displayMode" value="clouds"> Clouds</label>
+            </fieldset>
+
+            <button id="recreateMapButton">Recreate Map</button>
+        </div>
     </div>
-    <!-- <canvas id="waterAnimationCanvas" width="600" height="600" style="display: hidden;"></canvas> -->
-    <br>
-    <!-- <button id="toggleGridButton">Toggle Grid</button> -->
-    <div>
-        <label for="treeDensitySlider">Tree Density:</label>
-        <input type="range" id="treeDensitySlider" min="0" max="100" value="50">
-
-        <label for="islandSize">Island Size:</label>
-        <input type="range" id="islandSize" min="1" max="10" value="4">
-
-        <label for="cloudOpacitySlider">Cloud Opacity</label>
-        <input type="range" id="cloudOpacitySlider" min="0" max="1" step="0.05" value="0.5">
-
-
-        <button id="toggleWavesButton" onclick="toggleWaves()">Toggle Waves</button>
-        <button id="mergeToggleButton" onclick="toggleMerge()">Toggle Elevation Merge</button>
-
-    </div>
-
-    <div>
-        <label><input type="radio" name="displayMode" value="elevation" checked> Elevation</label>
-        <label><input type="radio" name="displayMode" value="waves"> Waves</label>
-        <label><input type="radio" name="displayMode" value="clouds"> Clouds</label>
-    </div>
-    
-
-
-
-    <button id="recreateMapButton">Recreate Map</button>
 
     <script src="perlin.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>
