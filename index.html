@@ -14,7 +14,8 @@
     <div id="app">
         <div id="canvasContainer">
             <canvas id="islandCanvas" width="600" height="600"></canvas>
-            <canvas id="elevationCanvas" width="600" height="600"></canvas>
+            <canvas id="elevationCanvas" class="hidden" width="600" height="600"></canvas>
+
         </div>
 
         <div id="controls">
@@ -38,7 +39,10 @@
                 <button id="mergeToggleButton" onclick="toggleMerge()">Toggle Elevation Merge</button>
             </div>
 
-            <fieldset>
+            <button id="debugModeButton">Debug Mode</button>
+
+            <fieldset id="debugControls" class="hidden">
+
                 <legend>Debug Display</legend>
                 <label><input type="radio" name="displayMode" value="elevation" checked> Elevation</label>
                 <label><input type="radio" name="displayMode" value="waves"> Waves</label>
