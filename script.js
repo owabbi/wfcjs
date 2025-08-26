@@ -29,13 +29,30 @@ function initializeGridWithAllOptions() {
 
 const canvas = document.getElementById("islandCanvas");
 const elevationCanvas = document.getElementById("elevationCanvas");
+const canvasContainer = document.getElementById("canvasContainer");
 const ctx = canvas.getContext("2d");
 const elevationCtx = elevationCanvas.getContext("2d");
 // const waterAnimationCanvas = document.getElementById("waterAnimationCanvas");
 // const waterCtx = waterAnimationCanvas.getContext("2d");
 
+let debugMode = false; // Track whether debug elements are visible
+
 let collapseQueue = []; // Queue to store cells to collapse
 let autoCollapse = false; // Flag for "Skip All" mode
+
+function resizeCanvas() {
+  const controls = document.getElementById("controls");
+  const header = document.querySelector("header");
+  const maxWidth = window.innerWidth - controls.offsetWidth - 40;
+  const maxHeight = window.innerHeight - header.offsetHeight - 40;
+  const size = Math.min(maxWidth, maxHeight);
+
+  canvasContainer.style.width = size + "px";
+  canvasContainer.style.height = size + "px";
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 
 function applyPreferences() {
     const sliderElement = document.getElementById("islandSize");
@@ -213,6 +230,32 @@ function initializeMap() {
 document
   .getElementById("recreateMapButton")
   .addEventListener("click", initializeMap);
+
+// Toggle visibility of debug elements
+function toggleDebugMode() {
+  debugMode = !debugMode;
+
+  document
+    .getElementById("elevationCanvas")
+    .classList.toggle("hidden", !debugMode);
+  document
+    .getElementById("debugControls")
+    .classList.toggle("hidden", !debugMode);
+
+  const btn = document.getElementById("debugModeButton");
+  btn.textContent = debugMode ? "Hide Debug" : "Debug Mode";
+
+  if (debugMode) {
+    updateDebugDisplay(selectedMode);
+  } else {
+    cancelAnimationFrame(debugAnimationFrameId);
+    elevationCtx.clearRect(0, 0, elevationCanvas.width, elevationCanvas.height);
+  }
+}
+
+document
+  .getElementById("debugModeButton")
+  .addEventListener("click", toggleDebugMode);
 
 // Render the entire grid
 function renderGrid(time = 0) {
