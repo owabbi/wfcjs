@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>wfc</title>
 </head>
+
 <body>
-    <header>
+    <!-- <header>
         <h1>Island Generator</h1>
-    </header>
+    </header> -->
 
-    <div id="app">
-        <div id="canvasContainer">
-            <canvas id="islandCanvas" width="600" height="600"></canvas>
-            <canvas id="elevationCanvas" class="hidden" width="600" height="600"></canvas>
-
-        </div>
-
-        <div id="controls">
+    <div class="sidebar">
+        <h1>Island Generator</h1>
+        <div class="island-config">
+            <h2>Environment Config</h2>
             <div class="control-group">
                 <label for="treeDensitySlider">Tree Density</label>
                 <input type="range" id="treeDensitySlider" min="0" max="100" value="50">
@@ -33,7 +31,10 @@
                 <label for="cloudOpacitySlider">Cloud Opacity</label>
                 <input type="range" id="cloudOpacitySlider" min="0" max="1" step="0.05" value="0.5">
             </div>
+        </div>
 
+        <div>
+            <h2>Menu</h2>
             <div class="control-group">
                 <button id="toggleWavesButton" onclick="toggleWaves()">Toggle Waves</button>
                 <button id="mergeToggleButton" onclick="toggleMerge()">Toggle Elevation Merge</button>
@@ -53,7 +54,17 @@
         </div>
     </div>
 
+    <div id="app">
+        <div id="canvasContainer">
+            <canvas id="islandCanvas" width="1500" height="1500"></canvas>
+            <canvas id="elevationCanvas" class="hidden" width="600" height="600"></canvas>
+
+        </div>
+    </div>
+
+
     <script src="perlin.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>
