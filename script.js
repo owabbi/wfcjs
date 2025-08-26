@@ -28,26 +28,11 @@ function initializeGridWithAllOptions() {
 }
 
 const canvas = document.getElementById("islandCanvas");
-const canvasContainer = document.getElementById("canvasContainer");
 const elevationCanvas = document.getElementById("elevationCanvas");
 const ctx = canvas.getContext("2d");
 const elevationCtx = elevationCanvas.getContext("2d");
 // const waterAnimationCanvas = document.getElementById("waterAnimationCanvas");
 // const waterCtx = waterAnimationCanvas.getContext("2d");
-
-function resizeCanvas() {
-  canvas.width = canvasContainer.clientWidth;
-  canvas.height = canvasContainer.clientHeight;
-  elevationCanvas.width = canvas.width;
-  elevationCanvas.height = canvas.height;
-}
-
-window.addEventListener("resize", () => {
-  resizeCanvas();
-  renderGrid();
-});
-
-resizeCanvas();
 
 let debugMode = false; // Track whether debug elements are visible
 
@@ -213,7 +198,6 @@ function startCollapse() {
 }
 
 function initializeMap() {
-  resizeCanvas();
   const randomSeed = Math.floor(Math.random() * 10000); // Adjust range if needed
   noise.seed(randomSeed); // Assuming the Perlin noise library has a seed function
 
@@ -262,10 +246,6 @@ document
 function renderGrid(time = 0) {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous frame
 
-  const mapPixelSize = gridSize * tileSize;
-  const offsetX = (canvas.width - mapPixelSize) / 2;
-  const offsetY = (canvas.height - mapPixelSize) / 2;
-
   // Draw the land and elevation first
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
@@ -288,7 +268,7 @@ function renderGrid(time = 0) {
         ctx.fillStyle = baseColor;
       }
 
-      ctx.fillRect(offsetX + x * tileSize, offsetY + y * tileSize, tileSize, tileSize);
+      ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
     }
   }
 
@@ -335,12 +315,6 @@ function generateMapWithElevation() {
 }
 
 function renderElevationMap() {
-  const mapPixelSize = gridSize * tileSize;
-  const offsetX = (elevationCanvas.width - mapPixelSize) / 2;
-  const offsetY = (elevationCanvas.height - mapPixelSize) / 2;
-
-  elevationCtx.clearRect(0, 0, elevationCanvas.width, elevationCanvas.height);
-
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       const cell = grid[y][x];
@@ -355,20 +329,10 @@ function renderElevationMap() {
         const color = `rgb(${grayscaleValue},${grayscaleValue},${grayscaleValue})`;
 
         elevationCtx.fillStyle = color;
-        elevationCtx.fillRect(
-          offsetX + x * tileSize,
-          offsetY + y * tileSize,
-          tileSize,
-          tileSize
-        );
+        elevationCtx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
       } else {
         // Clear any previous elevation on water tiles
-        elevationCtx.clearRect(
-          offsetX + x * tileSize,
-          offsetY + y * tileSize,
-          tileSize,
-          tileSize
-        );
+        elevationCtx.clearRect(x * tileSize, y * tileSize, tileSize, tileSize);
       }
     }
   }
@@ -407,10 +371,6 @@ function elevationToColor(elevation) {
 function renderGrid(time = 0) {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous frame
 
-  const mapPixelSize = gridSize * tileSize;
-  const offsetX = (canvas.width - mapPixelSize) / 2;
-  const offsetY = (canvas.height - mapPixelSize) / 2;
-
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       const cell = grid[y][x];
@@ -432,12 +392,8 @@ function renderGrid(time = 0) {
         ctx.fillStyle = baseColor;
       }
 
-      ctx.fillRect(offsetX + x * tileSize, offsetY + y * tileSize, tileSize, tileSize);
+      ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
     }
-  }
-
-  if (cloudsEnabled) {
-    renderCloudLayer(time);
   }
 }
 
@@ -582,25 +538,16 @@ document
 
 // Cloud rendering as a separimate layer on top
 function renderCloudLayer(te) {
-  const mapPixelSize = gridSize * tileSize;
-  const offsetX = (canvas.width - mapPixelSize) / 2;
-  const offsetY = (canvas.height - mapPixelSize) / 2;
-
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
-      const cloudValue = generateCloudNoise(x, y, te);
+      const cloudValue = generateCloudNoise(x, y, time);
 
       // Only render clouds in the highest regions of the noise
       if (cloudValue > 0.7) {
         // Adjust for sparse clouds
         const alpha = cloudOpacity * (cloudValue - 0.7) * 3.3; // Adjust for opacity control
         ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(alpha, 1)})`;
-        ctx.fillRect(
-          offsetX + x * tileSize,
-          offsetY + y * tileSize,
-          tileSize,
-          tileSize
-        );
+        ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
       }
     }
   }
@@ -679,21 +626,12 @@ function updateDebugDisplay(mode) {
 function animateWaveDebugView(time = 0) {
   elevationCtx.clearRect(0, 0, elevationCanvas.width, elevationCanvas.height);
 
-  const mapPixelSize = gridSize * tileSize;
-  const offsetX = (elevationCanvas.width - mapPixelSize) / 2;
-  const offsetY = (elevationCanvas.height - mapPixelSize) / 2;
-
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       const noiseValue = getNoiseValue(x, y, time); // Same noise function as main screen
       const shade = Math.floor(255 * (0.5 + 0.5 * noiseValue)); // Normalize to [0, 255]
       elevationCtx.fillStyle = `rgb(${shade}, ${shade}, 255)`; // Blueish wave effect
-      elevationCtx.fillRect(
-        offsetX + x * tileSize,
-        offsetY + y * tileSize,
-        tileSize,
-        tileSize
-      );
+      elevationCtx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
     }
   }
 
@@ -706,21 +644,12 @@ function animateWaveDebugView(time = 0) {
 function animateCloudDebugView(time = 0) {
   elevationCtx.clearRect(0, 0, elevationCanvas.width, elevationCanvas.height);
 
-  const mapPixelSize = gridSize * tileSize;
-  const offsetX = (elevationCanvas.width - mapPixelSize) / 2;
-  const offsetY = (elevationCanvas.height - mapPixelSize) / 2;
-
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       const cloudValue = generateCloudNoise(x, y + time); // Same cloud noise function as main screen
       const shade = Math.floor(128 + 127 * cloudValue); // Gray scale from light to dark
       elevationCtx.fillStyle = `rgb(${shade}, ${shade}, ${shade})`; // Shades of gray for clouds
-      elevationCtx.fillRect(
-        offsetX + x * tileSize,
-        offsetY + y * tileSize,
-        tileSize,
-        tileSize
-      );
+      elevationCtx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
     }
   }
 
@@ -731,43 +660,25 @@ function animateCloudDebugView(time = 0) {
 
 // Function to render wave debug information on elevationCanvas
 function renderWaveDebugView() {
-  const mapPixelSize = gridSize * tileSize;
-  const offsetX = (elevationCanvas.width - mapPixelSize) / 2;
-  const offsetY = (elevationCanvas.height - mapPixelSize) / 2;
-
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       // Get wave noise value for this tile (assuming getNoiseValue is defined)
       const noiseValue = getNoiseValue(x, y, time);
       const shade = Math.floor(255 * (0.5 + 0.5 * noiseValue)); // Normalize to [0, 255]
       elevationCtx.fillStyle = `rgb(${shade}, ${shade}, 255)`; // Blueish shade for waves
-      elevationCtx.fillRect(
-        offsetX + x * tileSize,
-        offsetY + y * tileSize,
-        tileSize,
-        tileSize
-      );
+      elevationCtx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
     }
   }
 }
 
 // Function to render cloud debug information on elevationCanvas
 function renderCloudDebugView() {
-  const mapPixelSize = gridSize * tileSize;
-  const offsetX = (elevationCanvas.width - mapPixelSize) / 2;
-  const offsetY = (elevationCanvas.height - mapPixelSize) / 2;
-
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       const cloudValue = generateCloudNoise(x, y); // Assuming this function exists
       const shade = Math.floor(255 * cloudValue); // Normalize to [0, 255]
       elevationCtx.fillStyle = `rgba(255, 255, 255, ${cloudValue})`; // White clouds with transparency
-      elevationCtx.fillRect(
-        offsetX + x * tileSize,
-        offsetY + y * tileSize,
-        tileSize,
-        tileSize
-      );
+      elevationCtx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
     }
   }
 }
